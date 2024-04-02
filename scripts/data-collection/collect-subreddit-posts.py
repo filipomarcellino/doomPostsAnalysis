@@ -10,32 +10,50 @@ def main():
     client_ID = sys.argv[1]
     client_secret = sys.argv[2]
     user_agent = sys.argv[3]
+
     # Target subreddit
-    subreddit_name = sys.argv[4]
+    subreddit_list = [sys.argv[4]]
+
+    # If this is not a valid subreddit name, iterate through all
+    # the subreddits in the list.
+    if len(sys.argv[4]) < 3:
+        subreddit_list = ['cscareerquestions', 'csMajors', 'cscareerquestionsCAD', 'cscareers',
+                      'cscareerquestionsEU', 'developersIndia', 'cscareerquestionsuk', 'computerscience',
+                      'cscareerquestionsOCE', 'learnprogramming', 'DevelEire', 'dataengineering',
+                      'ITCareerQuestions', 'compsci', 'AskComputerScience', 'ExperiencedDevs', 'webdev']
 
     # Setup PRAW auth and subreddit to target.
     reddit = praw.Reddit(client_id=client_ID,
                          client_secret=client_secret,
                          user_agent=user_agent)
 
-    subreddit = reddit.subreddit(subreddit_name)
-
     # get directory for data
     parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
     data_dir = os.path.join(parent_dir, r"data")
 
-    # filename for this CSV file
-    file_name = os.path.join(data_dir, f"{subreddit_name}-posts.csv")
+    # for all subreddits
 
-    # Fetch all the posts for this subreddit
-    posts = fetch_posts(subreddit)
+    for subreddit_name in subreddit_list:
 
-    print(f"Your API auth has {(reddit.auth.limits).get('remaining')} requests remaining. These will "
+        print(f"Collecting data for {subreddit_name}")
+
+        subreddit = reddit.subreddit(subreddit_name)
+
+        # filename for this CSV file
+        file_name = os.path.join(data_dir, f"{subreddit_name}-posts.csv")
+
+        # Fetch all the posts for this subreddit
+        posts = fetch_posts(subreddit)
+
+        print(f"Your API auth has {(reddit.auth.limits).get('remaining')} requests remaining. These will "
           f"reset at timestamp {(reddit.auth.limits).get('reset_timestamp')} (unix time).")
 
-    # Write to CSV in the Data folder
-    write_posts_to_csv(posts, file_name)
-    sys.exit(0)
+        # Write to CSV in the Data folder
+        write_posts_to_csv(posts, file_name)
+        continue
+
+    # after loop is done, exit
+    sys.exit()
 
 
 def fetch_posts(subreddit, limit=None):
