@@ -11,6 +11,7 @@ Install Ollama - https://ollama.com (model to run on machine)
 In terminal - ollama run llama2 
 
 pip3 install ollama (python library)
+ - Make sure to do this in the root directory
 
 proceed to run python script (testollama just for talking to it in terminal)
 

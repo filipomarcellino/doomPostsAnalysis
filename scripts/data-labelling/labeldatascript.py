@@ -16,10 +16,10 @@ def ask_ollama(text):
 def determine_sentiments(data):
     sentiments = []
     for _, row in data.iterrows():
-        combined_text = f"{row['Title']} {row['Content']}"
+        combined_text = f"{row['title']} {row['content']}"
         sentiment = ask_ollama(combined_text)
 
-       if sentiment.lower() == "neutral":
+        if sentiment.lower() == "neutral":
             sentiments.append('Neutral')
         elif sentiment.lower() == 'positive':
             sentiments.append('Positive')
@@ -34,7 +34,7 @@ def determine_sentiments(data):
 def main(data_path):
     data = pd.read_csv(data_path)
 
-    data['Sentiment'] = determine_sentiments(data)
+    data['sentiment'] = determine_sentiments(data)
 
     output_file_path = f"{data_path}_labelled.csv"
     data.to_csv(output_file_path, index=False)
