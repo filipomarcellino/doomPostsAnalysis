@@ -1,11 +1,11 @@
 Using Ollama and Python for Local AI LLM System (Ollama, Llama2, Python) to label data
 
 
-#IMPORTANT NOTE:#
+#IMPORTANT NOTE:
 Make sure Ollama is running on the local system before running the Python script!
 
 
-##Steps:##
+##Steps:
 Install Ollama - https://ollama.com (model to run on machine)
 
 In terminal - ollama run llama2 
@@ -16,7 +16,7 @@ proceed to run python script
 
 
 
-###For running labelling script:###
+###For running labelling script:
 
 python labelscript.py data.csv
 
