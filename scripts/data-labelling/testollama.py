@@ -13,6 +13,7 @@ def clear_screen():
 
 def ask(input_data):
     query = f'{input_data} - answer in 30 or fewer words'
+    # note: I am using llama2 here, if you have beefy machine can use llama2:7b
     response = ollama.chat(model='llama2', messages=[
         {
             'role': 'user',
@@ -26,7 +27,7 @@ def ask(input_data):
 
 os.system('clear')
 while True:
-    question = input('how can i help you?  ')
+    question = input('Enter Question: ')
     clear_screen()
     answer = ask(question)
     print(f'Question: {question}')
