@@ -7,7 +7,7 @@ def ask_ollama(text):
     response = ollama.chat(model='llama2', messages=[
         {
             'role': 'user',
-            'content': f'If the following text is about computer science career, is it positive, negative, neutral or if not about carrer N/A ?: "{text}" - answer in 1 word',
+            'content': f'If the following text is a post about computer science career, is it positive, negative, neutral or neither ?: "{text}" - answer in 1 word',
         },
     ])
     return response['message']['content']
@@ -16,12 +16,14 @@ def ask_ollama(text):
 def determine_sentiments(data):
     sentiments = []
     for _, row in data.iterrows():
-        title_sentiment = ask_ollama(row['Title'])
-        content_sentiment = ask_ollama(row['Content'])
+        combined_text = f"{row['Title']} {row['Content']}"
+        sentiment = ask_ollama(combined_text)
 
-        if 'positive' in title_sentiment.lower() or 'positive' in content_sentiment.lower():
+        if sentiment == "Neither":
+            sentiments.append('Neither')
+        elif sentiment == 'Positive':
             sentiments.append('Positive')
-        elif 'negative' in title_sentiment.lower() and 'negative' in content_sentiment.lower():
+        elif sentiment == 'Negative':
             sentiments.append('Negative')
         else:
             sentiments.append('Neutral')
