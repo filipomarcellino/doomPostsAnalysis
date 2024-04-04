@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import sys
+from sklearn.model_selection import train_test_split
 
 
 def main():
@@ -9,10 +10,11 @@ def main():
     parent_dir = os.path.dirname(os.path.dirname(os.getcwd()))
     data_dir = os.path.join(parent_dir, r"data")
 
-    subreddit_list = ['cscareerquestions', 'csMajors', 'cscareerquestionsCAD', 'cscareers',
-                      'cscareerquestionsEU', 'developersIndia', 'cscareerquestionsuk', 'computerscience',
-                      'cscareerquestionsOCE', 'learnprogramming', 'DevelEire', 'dataengineering',
-                      'ITCareerQuestions', 'compsci', 'AskComputerScience', 'ExperiencedDevs', 'webdev']
+    subreddit_list = ['csMajors', 'cscareerquestionsCAD', 'cscareerquestionsEU', 'developersIndia', 'cscareerquestionsuk', 'computerscience', 'ExperiencedDevs', 'webdev']
+    analysis_subreddit = 'csMajors'
+
+    # Initialize an empty DataFrame to hold all records
+    all_subreddits_data = pd.DataFrame()
 
     # iterate through all the data sources
     for subreddit_name in subreddit_list:
@@ -29,11 +31,23 @@ def main():
             print(f"{subreddit_name}-posts.csv was not found.\n")
             continue
 
-        # Do data cleaning here.
+        # Handle Missing Values - Remove rows where 'Title' or 'Content' is missing.
+        # This removed around 4000 entries from our dataset
+        subreddit_data.dropna(subset=['title', 'content'], inplace=True)
 
-        # Turn into two sets of data here.
+        # If this is the analysis subreddit
+        if (subreddit_name == analysis_subreddit):
+            # Write to csv
+            subreddit_data.to_csv(os.path.join(data_dir, "cleaned", "analysis.csv"), index=False)
+            print(f'Cleaned {subreddit_name}-posts.csv data. This is the analysis dataset.\n')
 
-        print("\n")
+        # Else, append to the main DataFrame
+        all_subreddits_data = pd.concat([all_subreddits_data, subreddit_data], ignore_index=True)
+        print(f"Cleaned {subreddit_name}-posts.csv data and appended to main dataframe\n")
+
+
+    # Export to data directory
+    all_subreddits_data.to_csv(os.path.join(data_dir, "cleaned", "all_subreddits.csv"), index=False)
 
     sys.exit()
 

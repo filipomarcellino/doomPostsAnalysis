@@ -3,3 +3,5 @@ spacy
 matplotlib
 pandas
 ollama
+scikit-learn
+
