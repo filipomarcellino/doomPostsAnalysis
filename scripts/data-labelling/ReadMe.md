@@ -1,4 +1,4 @@
-Using Ollama and Python for Local AI LLM System (Ollama, Llama2, Python) to label data
+Using Ollama and Python for Local AI LLM to label data
 
 
 # IMPORTANT NOTE:
