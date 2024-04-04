@@ -11,6 +11,7 @@ def main():
     data_dir = os.path.join(parent_dir, r"data")
 
     subreddit_list = ['csMajors', 'cscareerquestionsCAD', 'cscareerquestionsEU', 'developersIndia', 'cscareerquestionsuk', 'computerscience', 'ExperiencedDevs', 'webdev']
+    analysis_subreddit = 'csMajors'
 
     # Initialize an empty DataFrame to hold all records
     all_subreddits_data = pd.DataFrame()
@@ -31,30 +32,22 @@ def main():
             continue
 
         # Handle Missing Values - Remove rows where 'Title' or 'Content' is missing.
+        # This removed around 4000 entries from our dataset
         subreddit_data.dropna(subset=['title', 'content'], inplace=True)
 
-        # Normalize Text Data - Convert to lowercase and trim whitespaces.
-        subreddit_data['title'] = subreddit_data['title'].str.lower().str.strip()
-        subreddit_data['content'] = subreddit_data['content'].str.lower().str.strip()
+        # If this is the analysis subreddit
+        if (subreddit_name == analysis_subreddit):
+            # Write to csv
+            subreddit_data.to_csv(os.path.join(data_dir, "cleaned", "analysis.csv"), index=False)
+            print(f'Cleaned {subreddit_name}-posts.csv data. This is the analysis dataset.\n')
 
-        # Randomly sample 1000 posts from each subreddit
-        if len(subreddit_data) >= 1000:
-            limited_subreddit_data = subreddit_data.sample(n=1000, random_state=42)
-        else:
-            limited_subreddit_data = subreddit_data
+        # Else, append to the main DataFrame
+        all_subreddits_data = pd.concat([all_subreddits_data, subreddit_data], ignore_index=True)
+        print(f"Cleaned {subreddit_name}-posts.csv data and appended to main dataframe\n")
 
-        # Append to the main DataFrame
-        all_subreddits_data = pd.concat([all_subreddits_data, limited_subreddit_data], ignore_index=True)
-        print(f"Cleaned {subreddit_name}-posts.csv data and appended to main dataframe")
-
-
-    # Perform train-validation split
-    train_data, validation_data = train_test_split(all_subreddits_data, test_size=0.2, random_state=42)
 
     # Export to data directory
-    train_data.to_csv(os.path.join(data_dir, "cleaned", "all_subreddits_train.csv"), index=False)
-    validation_data.to_csv(os.path.join(data_dir, "cleaned", "all_subreddits_validation.csv"), index=False)
-    print("Train and validation data exported")
+    all_subreddits_data.to_csv(os.path.join(data_dir, "cleaned", "all_subreddits.csv"), index=False)
 
     sys.exit()
 
