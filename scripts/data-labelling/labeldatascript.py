@@ -7,7 +7,7 @@ def ask_ollama(text):
     response = ollama.chat(model='llama2', messages=[
         {
             'role': 'user',
-            'content': f'Does this post have a positive, negative or neutral outlook on computer science career? "{text}" - answer in 1 word',
+            'content': f'If the following text is about computer science career, is it positive, negative, neutral or if not about carrer N/A ?: "{text}" - answer in 1 word',
         },
     ])
     return response['message']['content']
