@@ -22,7 +22,7 @@ def determine_sentiments(data):
        if sentiment.lower() == "neutral":
             sentiments.append('Neutral')
         elif sentiment.lower() == 'positive':
-            sentiments.append('positive')
+            sentiments.append('Positive')
         elif sentiment.lower() == 'negative':
             sentiments.append('Negative')
         else:
