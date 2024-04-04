@@ -12,7 +12,7 @@ In terminal - ollama run llama2
 
 pip3 install ollama (python library)
 
-proceed to run python script
+proceed to run python script (testollama just for talking to it in terminal)
 
 
 
