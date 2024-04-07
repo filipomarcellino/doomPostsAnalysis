@@ -25,9 +25,21 @@ def determine_sentiments(data):
 
     print("Generating labels. This may take some time.")
 
+    n = 0
+    m = 0
+
     ollama.create(model='sentiment', modelfile=model_file)
 
     for _, row in data.iterrows():
+
+        # give an estimate every 50 entries
+        # this overhead is basically meaningless since
+        # ollama is what takes all the time up in this system
+        if n >= 50:
+            m = m + 1
+            print(f'{m*50} entries processed')
+            n = 0
+
         combined_text = f"{row['title']} {row['content']}"
         sentiment = ask_ollama(combined_text)
 
@@ -54,6 +66,7 @@ def determine_sentiments(data):
             sentiments.append('negative')
         else:
             sentiments.append('neither')
+        n = n + 1
     return sentiments
 
 
