@@ -64,11 +64,49 @@ def main():
 
     WN_lemmatizer = WordNetLemmatizer()
 
+    print("Transforming data")
+
+    # Sometimes there are still NaN entries, a bit strange
+    # We just filter them
+    data.dropna(subset=['title', 'content'], inplace=True)
+
+    # convert neither into neutral, it has the same meaning in
+    # this context
+    data[data['sentiment'] == 'neither'] = 'neutral'
+
+    # When counting on the dataset we used run on just generate-labels
+    # the label distribution is
+    #
+    # neither: 819
+    # negative: 973
+    # neutral: 19684
+    # positive: 2202
+    #
+    # Clearly, we want to identify negative and positive sentiment
+    # more than the neutral sentiment. We should probably fix
+    # this imbalance a bit.
+
+    # resample the imbalanced data
+    # We will sample neutral an equal number of times
+    num_pos = (data[data['sentiment'] == 'positive']).shape[0]
+
+    # Keep the same amount of the other data
+    data_app = data[data['sentiment'].isin(['positive', 'negative', 'neither'])]
+
+    # Sample
+    data = data[data['sentiment'] == 'neutral'].sample(n=num_pos)
+
+    # Append this to get our undersampled dataframe
+    data = data._append(data_app)
+
     # Take relevant data out
     X = data['title'] + ' ' + data['content']
+
     # Apply processing to the data to prepare it for TFIDF
     X = X.apply(lambda x: combined_processing(x, custom_stopwords=custom_stopwords, lemmatizer=WN_lemmatizer))
     y = data['sentiment']
+
+    print("Hypertuning complement naive bayes. This may take some time.")
 
     # Split training and validation sets with 20% of the data as validation data
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.20)
@@ -113,17 +151,36 @@ def main():
     # n_iter is just how many samples we test
     # We need to pick a scoring metric that is good for unbalanced data
     # Preferably, we would want negative/positive most accurately identified
+    #
+    # We have some options for scoring that can be found here
+    # https://scikit-learn.org/stable/modules/model_evaluation.html#scoring
+    #
+    # Some tests done with our original data
+    #
+
     comp_bayes_search = RandomizedSearchCV(
         estimator=comp_bayes_pipe,
         param_distributions=comp_bayes_grid,
         n_iter=100,
         n_jobs=4,
-        verbose=1
+        verbose=1,
+        scoring='roc_auc_ovo_weighted'
     )
 
     comp_bayes_search.fit(X_train, y_train)
 
-    # We need to find the best performing hyperparameters here
+    best_cNB_estimator = comp_bayes_search.best_estimator_
+
+    f1_cNB_score = best_cNB_estimator.score(X_valid, y_valid)
+    print(f"Best validation score for complement naive bayes: {f1_cNB_score}")
+
+    y_pred_cNB = best_cNB_estimator.predict(X_valid)
+
+    cNB_confusion = confusion_matrix(y_true=y_valid, y_pred=y_pred_cNB)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cNB_confusion, display_labels=best_cNB_estimator.classes_)
+
+    disp.plot()
+    plt.show()
 
     return
 
