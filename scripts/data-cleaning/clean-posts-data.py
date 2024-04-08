@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 import sys
-from sklearn.model_selection import train_test_split
 
 
 def main():
@@ -34,6 +33,14 @@ def main():
         # Handle Missing Values - Remove rows where 'Title' or 'Content' is missing.
         # This removed around 4000 entries from our dataset
         subreddit_data.dropna(subset=['title', 'content'], inplace=True)
+
+        # Cutoff the text data
+        # The title already has a cutoff
+        subreddit_data['content'] = subreddit_data['content'].str.slice(0, 1000)
+
+        # Remove the value &#x200B;
+        # Around 1200 entries had this
+        subreddit_data['content'] = subreddit_data['content'].str.replace(r'&#x200B;', '', regex=True)
 
         # If this is the analysis subreddit
         if (subreddit_name == analysis_subreddit):

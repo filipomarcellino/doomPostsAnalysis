@@ -49,7 +49,7 @@ def determine_sentiments(data):
         sentiment_pattern = r'\s*\b(negative|neutral|positive)\b\s*'
 
         # Match the first sentiment
-        sentiment_match = (re.match(sentiment_pattern, sentiment))
+        sentiment_match = (re.search(sentiment_pattern, sentiment))
 
         # If we found an instance of positive, neutral, negative
         if sentiment_match != None:
