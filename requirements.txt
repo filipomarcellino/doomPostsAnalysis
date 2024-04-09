@@ -4,4 +4,4 @@ matplotlib
 pandas
 ollama
 scikit-learn
-
+nltk
