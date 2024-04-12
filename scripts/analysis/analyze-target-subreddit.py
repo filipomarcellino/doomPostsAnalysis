@@ -3,7 +3,6 @@ import os
 import joblib
 import pandas as pd
 import re
-import nltk
 import seaborn as sns
 import matplotlib.pyplot as plt
 from nltk.tokenize import word_tokenize
@@ -11,6 +10,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
+from scipy.stats import linregress
 
 
 
@@ -52,6 +52,9 @@ def main(model_choice):
     model = joblib.load(model_filename)
 
     print("Transforming data")
+    # remove irrelevant data
+    analysis_data = analysis_data.drop(['ID'], axis=1)
+
     # Take relevant data out
     X = analysis_data['title'] + ' ' + analysis_data['content']
 
@@ -79,17 +82,69 @@ def main(model_choice):
     # -1 -> negative
     analysis_data['label'] = analysis_data['label'].apply(lambda x: label_to_numeric(x))
 
-    analysis_data.sort_values(by=['date', 'ID'], inplace=True)
+    analysis_data.sort_values(by=['date'], inplace=True)
 
-    analysis_data = analysis_data.reset_index()
+    analysis_data = analysis_data.reset_index(drop=True)
 
-    hist = sns.histplot(analysis_data['date'], bins=64)
+    analysis_data = analysis_data[['date', 'label']]
 
-    plt.show()
+    # Now we calculate categorical proportions
+    label_count = analysis_data.groupby(by=pd.Grouper(key='date', freq='ME'))['label'].value_counts().unstack()
 
+    # There is inconsistent data for everything that is before 2020-8-31
+    # so drop entries where not all rows have data
+    label_count = label_count.dropna()
+    label_count = label_count.reset_index()
+    label_count.columns = label_count.columns.map(str)
 
+    # totals
+    label_count['total'] = label_count['-1'] + label_count['0'] + label_count['1']
 
+    # proportions
+    label_count['-1'] = label_count['-1'] / label_count['total']
+    label_count['0'] = label_count['0'] / label_count['total']
+    label_count['1'] = label_count['1'] / label_count['total']
+
+    # to timestamp
+    label_count['timestamp'] = label_count['date'].apply(lambda x: x.timestamp())
+
+    neg_fit = linregress(label_count['timestamp'], label_count['-1'])
+    pos_fit = linregress(label_count['timestamp'], label_count['1'])
+
+    print(f'negative sentiment linregress pvalue = {neg_fit.pvalue}')
+    print(f'positive sentiment linregress pvalue = {pos_fit.pvalue}')
+
+    # get graphs directory
+    graph_dir = os.path.join(parent_dir, r'graphs')
+
+    # plot filenames
+    neg_reg_plotfile = os.path.join(graph_dir, r'negative_regression.png')
+    pos_reg_plotfile = os.path.join(graph_dir, r'positive_regression.png')
+    hist_plotfile = os.path.join(graph_dir, r'date_distribution.png')
+
+    # visuals to show how the proportion of each sentiment changed over time
+    neg_lineplot = sns.lineplot(x=label_count['date'], y=label_count['-1'])
+    neg_lineplot.set_xlabel('Time')
+    neg_lineplot.set_ylabel('Proportion')
+    plt.title("Negative sentiment proportion over time")
+    plt.savefig(neg_reg_plotfile)
+
+    # next plot
+    plt.clf()
+
+    pos_lineplot = sns.lineplot(x=label_count['date'], y=label_count['1'])
+    pos_lineplot.set_xlabel('Time')
+    pos_lineplot.set_ylabel('Proportion')
+    plt.title("Positive sentiment proportion over time")
+    plt.savefig(pos_reg_plotfile)
+
+    # next
+    plt.clf()
+    sns.histplot(analysis_data['date'], bins=64)
+    plt.title("analysis.csv date distribution")
+    plt.savefig(hist_plotfile)
     return
+
 
 def label_to_numeric(label):
     match label:

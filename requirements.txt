@@ -5,3 +5,6 @@ pandas
 ollama
 scikit-learn
 nltk
+joblib
+seaborn
+scipy
