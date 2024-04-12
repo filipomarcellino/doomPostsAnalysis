@@ -4,6 +4,8 @@ import joblib
 import pandas as pd
 import re
 import nltk
+import seaborn as sns
+import matplotlib.pyplot as plt
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet
@@ -30,10 +32,9 @@ def main(model_choice):
     # set path
     analysis_filename = os.path.join(cleaned_dir, analysis_filename)
 
-    analysis_data = pd.read_csv(analysis_filename)
+    analysis_data = pd.read_csv(analysis_filename, parse_dates=['date'])
 
     # load model of choice
-    model_filename = None
     match model_choice:
         case 'cNB':
             model_filename = os.path.join(estimators_dir, "cNB_estimator.joblib")
@@ -63,13 +64,41 @@ def main(model_choice):
     # lemmatizer used in generate-TFIDF-features
     WN_lemmatizer = WordNetLemmatizer()
 
+    # This shouldn't be necessary, but might as well
+    analysis_data.dropna(subset=['title', 'content'], inplace=True)
+
     # Apply processing to the data to prepare it for TFIDF
     X = X.apply(lambda x: combined_processing(x, custom_stopwords=custom_stopwords, lemmatizer=WN_lemmatizer))
+
+    # label with model
     analysis_data['label'] = model.predict(X)
 
-    print(analysis_data['label'])
+    # Map label values
+    # 1 -> positive
+    # 0 -> neutral
+    # -1 -> negative
+    analysis_data['label'] = analysis_data['label'].apply(lambda x: label_to_numeric(x))
+
+    analysis_data.sort_values(by=['date', 'ID'], inplace=True)
+
+    analysis_data = analysis_data.reset_index()
+
+    hist = sns.histplot(analysis_data['date'], bins=64)
+
+    plt.show()
+
+
 
     return
+
+def label_to_numeric(label):
+    match label:
+        case 'positive':
+            return 1
+        case 'neutral':
+            return 0
+        case 'negative':
+            return -1
 
 
 # We want to get the text ready for the TFIDF feature generation
