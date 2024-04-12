@@ -2,3 +2,9 @@ praw
 spacy
 matplotlib
 pandas
+ollama
+scikit-learn
+nltk
+joblib
+seaborn
+scipy
