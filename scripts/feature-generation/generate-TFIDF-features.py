@@ -4,7 +4,6 @@ import re
 import sys
 import nltk
 import joblib
-from joblib import dump
 import matplotlib.pyplot as plt
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
