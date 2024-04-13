@@ -1,5 +1,5 @@
 # GOAL
-Sentiment Analysis of cs reddit postings from 2019 to 2024
+Career Sentiment Analysis of cs reddit career postings from 2019 to 2024
 
 ## WorkFlow
 
