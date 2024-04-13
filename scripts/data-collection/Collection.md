@@ -7,9 +7,9 @@ https://praw.readthedocs.io/en/stable/getting_started/authentication.html#oauth
 
 ### Usage:
 Script callers must supply arguments for:
--client_ID
--client_secret
--user_agent
+- client_ID
+- client_secret
+- user_agent
 
 Script callers may supply arguments for:
 - target_subreddit (otherwise, default to built in list of subreddits)
