@@ -29,7 +29,11 @@ Output: p values and sentiment regression graphs.
 
 ### Data
 big list of CSVs -> stuff from step 1 (api calls)
+
 {all_subreddits, analysis} -> stuff from step 2 (filtering)
+
 {all_subreddits_labeled} -> stuff from step 3 (labeling)
+
 {joblib files, cMats} -> stuff from step 4 (generate TFIDF)
+
 {graphs} -> stuff from step 5 (analysis.py)
