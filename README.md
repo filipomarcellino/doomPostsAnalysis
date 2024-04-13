@@ -1,7 +1,7 @@
 # Project goal
 Sentiment analysis of computer science related reddit postings from 2019 to 2024
 
-## WorkFlow
+## Pipeline
 
 ### collect-subreddit-posts.py
 Input: client_ID, client_secret, user_agent, (optional: target_subreddit, otherwise defaults to predetermined list)
