@@ -6,15 +6,21 @@ import re
 import seaborn as sns
 import matplotlib.pyplot as plt
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
 from scipy.stats import linregress
+from nltk.corpus import stopwords
+import nltk
 
-
+def download_nltk_resources():
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('wordnet')
+    nltk.download('averaged_perceptron_tagger')
 
 def main(model_choice):
+    download_nltk_resources()
 
     # subreddit to analyze by default
     analysis_filename = "analysis.csv"
