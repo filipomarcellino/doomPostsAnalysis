@@ -1,4 +1,4 @@
-## Using Ollama and Python for label generation
+## Using Ollama for label generation
 
 ### Requirements:
 - Install and run Ollama: https://ollama.com
