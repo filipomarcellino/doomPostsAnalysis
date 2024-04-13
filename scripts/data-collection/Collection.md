@@ -14,5 +14,5 @@ Script callers must supply arguments for:
 Script callers may supply arguments for:
 - target_subreddit (otherwise, default to built in list of subreddits)
 
-# Output:
+### Output:
 This script produces a new csv file {subreddit_name}-posts.csv for any subreddit that data is collected for.
