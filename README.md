@@ -1,5 +1,3 @@
-# Group: Liam, Taras, Filip
-
 # GOAL
 Sentiment Analysis of cs reddit postings from 2019 to 2024
 
@@ -29,6 +27,8 @@ Output: p values and sentiment regression graphs.
 
 
 
+### Group: 
+Liam, Taras, Filip
 
 
 
