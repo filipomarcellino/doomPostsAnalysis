@@ -127,28 +127,54 @@ def main(model_choice):
     neg_reg_plotfile = os.path.join(graph_dir, r'negative_regression.png')
     pos_reg_plotfile = os.path.join(graph_dir, r'positive_regression.png')
     hist_plotfile = os.path.join(graph_dir, r'date_distribution.png')
+    combined_sentiment_plotfile = os.path.join(graph_dir, 'combined_sentiment.png')
 
-    # visuals to show how the proportion of each sentiment changed over time
+    sns.set()
+    plot_size = (14, 8)
+
+    # Negative sentiment
+    plt.figure(figsize=plot_size)
     neg_lineplot = sns.lineplot(x=label_count['date'], y=label_count['-1'])
     neg_lineplot.set_xlabel('Time')
     neg_lineplot.set_ylabel('Proportion')
     plt.title("Negative sentiment proportion over time")
+    plt.xticks(rotation=45)  # Rotate labels
+    plt.tight_layout()  # Ensure everything fits without overlapping
     plt.savefig(neg_reg_plotfile)
-
-    # next plot
     plt.clf()
 
+    # Positive sentiment
+    plt.figure(figsize=plot_size)
     pos_lineplot = sns.lineplot(x=label_count['date'], y=label_count['1'])
     pos_lineplot.set_xlabel('Time')
     pos_lineplot.set_ylabel('Proportion')
     plt.title("Positive sentiment proportion over time")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
     plt.savefig(pos_reg_plotfile)
-
-    # next
     plt.clf()
-    sns.histplot(analysis_data['date'], bins=64)
+
+    # Histogram for date distribution
+    plt.figure(figsize=plot_size)
+    sns.histplot(analysis_data['date'], bins=128)
     plt.title("analysis.csv date distribution")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
     plt.savefig(hist_plotfile)
+
+    # Combined sentiment
+    plt.figure(figsize=plot_size)
+    sns.lineplot(x=label_count['date'], y=label_count['-1'], label='Negative Sentiment')
+    sns.lineplot(x=label_count['date'], y=label_count['1'], label='Positive Sentiment')
+
+    plt.xlabel('Time')
+    plt.ylabel('Proportion')
+    plt.title("Sentiment Proportion Over Time")
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig(combined_sentiment_plotfile)
+    plt.clf()
     return
 
 
