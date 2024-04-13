@@ -27,7 +27,7 @@ Output: p values and sentiment regression graphs.
 
 
 
-### Group: 
+## Group: 
 Liam, Taras, Filip
 
 
