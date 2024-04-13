@@ -10,7 +10,7 @@ Output: csv files containing posts from each subreddit
 
 
 ### clean-posts-data.py
-Input: none
+Input: None
 
 Output: data/cleaned/all_subreddits.csv and data/cleaned/analysis.csv
 
