@@ -12,7 +12,7 @@ Output: csv files containing posts from each subreddit
 clean-posts-data.py
 Input: filenames of the csv files containing unfiltered posts
 Output: 2 csv files
-all_subreddits.csv (training data from all subreddits other than r/cs_majors)
+all_subreddits.csv (training data from all subreddits other than r/cs_majors), analysis
 
 generate-labels.py
 Input: all_subreddits.csv training data
@@ -21,19 +21,17 @@ Note script assumes you have proper input and output directory folders as specif
 
 generate-TFDIF-features.py
 Input: all_subreddits_labelled.csv
-Output: 3 different models in .joblib file extensions
+Output: 3 different models in .joblib file extensions, cMats
 
 analyze-target_subreddit.py
 Input: analysic.csv
 Output: p values and sentiment regression graphs.
 
-### Data
-big list of CSVs -> stuff from step 1 (api calls)
 
-{all_subreddits, analysis} -> stuff from step 2 (filtering)
 
-{all_subreddits_labeled} -> stuff from step 3 (labeling)
 
-{joblib files, cMats} -> stuff from step 4 (generate TFIDF)
 
-{graphs} -> stuff from step 5 (analysis.py)
+
+
+
+
