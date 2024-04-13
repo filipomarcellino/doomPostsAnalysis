@@ -1,4 +1,4 @@
-# Licenses of required licenses
+# Licenses of required libraries
 The following libraries are used for this project and must be installed by the user from the requirements.txt file. As of writing these are the licenses used by each project.
 
 ## PRAW
