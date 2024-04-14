@@ -47,10 +47,10 @@ def main():
             # Write to csv
             subreddit_data.to_csv(os.path.join(data_dir, "cleaned", "analysis.csv"), index=False)
             print(f'Cleaned {subreddit_name}-posts.csv data. This is the analysis dataset.\n')
-
-        # Else, append to the main DataFrame
-        all_subreddits_data = pd.concat([all_subreddits_data, subreddit_data], ignore_index=True)
-        print(f"Cleaned {subreddit_name}-posts.csv data and appended to main dataframe\n")
+        else:
+            # Else, append to the main DataFrame
+            all_subreddits_data = pd.concat([all_subreddits_data, subreddit_data], ignore_index=True)
+            print(f"Cleaned {subreddit_name}-posts.csv data and appended to main dataframe\n")
 
 
     # Export to data directory
